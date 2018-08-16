@@ -50,14 +50,16 @@ ggplot(aes(x = quality), data = pf) + geom_bar()
 
 #### 固定酸度图
 ```{r}
-ggplot(aes(x = fixed.acidity), data=pf) + geom_histogram(binwidth = 0.5) + scale_x_continuous(breaks = seq(4,16, 0.5))
+ggplot(aes(x = fixed.acidity), data=pf) + geom_histogram(binwidth = 0.5) + 
+  scale_x_continuous(breaks = seq(4,16, 0.5))
 ```
 
 >fixed.acidity也是正太分布，但是跟质量曲线区别较大，这个偏向左侧。 可能跟质量有一定关系
 
 #### 挥发物酸度
 ```{r}
-ggplot(aes(x = volatile.acidity), data = pf ) + geom_histogram(binwidth = 0.02) + scale_x_continuous(breaks = seq(0,1.6, 0.2))
+ggplot(aes(x = volatile.acidity), data = pf ) + geom_histogram(binwidth = 0.02) + 
+  scale_x_continuous(breaks = seq(0,1.6, 0.2))
 ```
 
 > volatile.acidity挥发酸度图形也有点正太分布，但是跟质量曲线区别较大，偏向左侧。 跟固定酸度应该有挺大关系，可能跟质量也有一定关系，需要进一步探究；
@@ -87,6 +89,7 @@ ggplot(aes(x = chlorides), data =pf) + geom_histogram()
 ```{r}
 ggplot(aes(x = free.sulfur.dioxide), data = pf) + geom_histogram()
 ```
+
 > free.sulfur.dioxide游离二氧化硫整体偏向左侧，且数据不连续，与质量曲线差异较大，应该关联不大；
 
 #### 总二氧化硫
@@ -142,9 +145,16 @@ Fixed、volatile acidity、free and total sulphur dioxide、sulphates、alcohol�
 #### 异常数据
 citric acid的分布不太正常，因为与同是酸度的fixed acidity 和 volatile acidity的分布不一致，后2个分布符合ph的正态分布； citric acid 应该是缺失了大量数据，或者部分数据不可用导致，具体可以看下图：
 ```{r}
-grid.arrange(ggplot(aes(x = fixed.acidity), data =pf ) + geom_histogram() + scale_x_log10(),
-             ggplot(aes(x = volatile.acidity), data =pf ) + geom_histogram() + scale_x_log10(),
-             ggplot(aes(x = citric.acid), data =pf ) + geom_histogram() + scale_x_log10(), ncol = 1
+grid.arrange(ggplot(aes(x = fixed.acidity), data =pf ) + 
+               geom_histogram() + 
+               scale_x_log10(breaks = seq(4,16,2)),
+             ggplot(aes(x = volatile.acidity), data =pf ) + 
+               geom_histogram() + 
+               scale_x_log10(breaks = seq(0,1.6, 0.2)),
+             ggplot(aes(x = citric.acid), data =pf ) + 
+               geom_histogram() + 
+               scale_x_log10(breaks = seq(0,1,0.2)), 
+             ncol = 1
              )
 ```
 
@@ -152,7 +162,8 @@ grid.arrange(ggplot(aes(x = fixed.acidity), data =pf ) + geom_histogram() + scal
 ## 新建指示评级
 质量评级，把葡萄酒质量分为优质“good”（质量分7-10）、均质“average”（质量分5-6）、差“bad”（质量分0-4）
 ```{r}
-pf$rating <- ifelse(pf$quality  < 5, 'bad', ifelse( pf$quality  < 7, 'average', 'good'))
+pf$rating <- ifelse(pf$quality  < 5, 'bad', 
+                    ifelse( pf$quality  < 7, 'average', 'good'))
 pf$rating <- ordered(pf$rating , levels = c('bad','average', 'good'))
 summary(pf$rating)
 ```
@@ -267,7 +278,7 @@ ggplot(aes(rating, alcohol), data = pf) +
 ## 双变量分析
 
 #### 与质量的关系
-从箱线图中可以看出，fixed acidity, citric acid, sulphates ， alcohol 与葡萄酒质量直接相关，volatile acidity ， pH 跟质量是负相关的。 从相关性测试中，观察到类似的趋势；
+从箱线图中可以看出，fixed acidity, citric acid, sulphates，alcohol 与葡萄酒质量正相关，volatile acidity ， pH 跟质量是负相关的。 从相关性测试中，观察到类似的趋势；
 
 #### 其他情况
 
@@ -292,8 +303,8 @@ corr
  - volatile acidity: -39.1%
  - density: -17.5%
  
- ## 多变量图
- 主要研究与质量相关的4个特征：alcohol，sulphates，citric.acid，volatile.acidity
+## 多变量图
+主要研究与质量相关的4个特征：alcohol，sulphates，citric.acid，volatile.acidity
 ```{r}
 ggplot(aes(x = citric.acid, y = volatile.acidity, color = factor(quality)), data = pf) +
   geom_jitter(alpha = 0.2) +
@@ -320,8 +331,9 @@ ggplot(aes(x = pH, y = alcohol, color = factor(quality)), data = pf) +
 ## 多变量分析
 多变量图，通过把质量分数分图，通过3个评级类别进行分析，可以看到，较高的alcohol, sulphates, citric acid, fixed acidity，较低的volatile acidity可以产生更高质量的葡萄酒。ph对质量的影响很小，这个很意外；
 
-## 最终分析图
-### 结论一 acid 影响葡萄酒质量
+## 最终成图
+### 结论一 酸度影响葡萄酒质量
+根据双变量分析结论，fixed acidity, citric acid与葡萄酒质量正相关，volatile acidity ，pH 跟质量是负相关的。绘制出相应线箱图
 ```{r}
 grid.arrange(ggplot(data = pf, aes(x = quality, y = fixed.acidity, fill = quality)) +
                scale_fill_brewer(palette = "Blues")+
@@ -351,7 +363,7 @@ grid.arrange(ggplot(data = pf, aes(x = quality, y = fixed.acidity, fill = qualit
  - 但是，挥发性酸volatile acidity不利于葡萄酒质量；
  
 ### 结论二 Alcohol影响葡萄酒质量
-
+根据双变量分析结论，alcohol 跟质量是正相关的
 ```{r}
 ggplot(data = pf, aes( x = quality, y = alcohol, fill = rating)) +
   geom_boxplot() +
@@ -362,7 +374,8 @@ ggplot(data = pf, aes( x = quality, y = alcohol, fill = rating)) +
 
  - 一般来说，高质量葡萄酒含有较高的酒精含量，但是单独看酒精对质量的影响并不是那么强；
 
-## 结论三 究竟什么影响葡萄酒质量
+### 结论三 究竟什么影响葡萄酒质量
+将多变量分析中的average评级去更好的观察酒的质量。
 ```{r}
 ggplot(data = subset(pf, rating != 'average'),
        aes(x = alcohol, y = volatile.acidity, color = rating)) +
@@ -375,6 +388,12 @@ ggplot(data = subset(pf, rating != 'average'),
 高酒精含量alcohol 和 低挥发性酸度volatile acid 组合起来，可以产生更优质的葡萄酒；
 
 ## 反思
-
+分析过程中成功的发现部分：
 单变量分析时，对各变量都进行了探索，ph，密度，固定酸度，挥发性酸度，硫酸盐，酒精。 后来双变量分析时越来越清晰， 最后多变量分析时，明确了高酒精含量 和 低挥发性酸度，对葡萄酒质量影响非常大；
+
+分析过程中遇到的难点：
+在单变量分析时，以为密度会对葡萄酒质量有较大的关联，但是通过双变量分析，发现并没有神马关系， 考虑问题还是要多一个维度，会更加的客观，发现真相。
+
+未来如何进一步丰富分析内容和提高报告质量：
+可以收集白酒和其他酒类的相关影响因素数据，看看是否影响酒类的因素都是一样的，这样对酒类的了解就更加全面了，也有利于指导酒类生产；
 
