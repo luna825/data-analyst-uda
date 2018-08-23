@@ -278,6 +278,36 @@ ggplot(aes(rating, alcohol), data = pf) +
 ## 双变量分析
 
 #### 与质量的关系
+```{r}
+grid.arrange(ggplot(data = pf, aes(x = quality, y = fixed.acidity, fill = quality)) +
+               scale_fill_brewer(palette = "Blues")+
+               xlab('Quality') +
+               ylab('Fixed Acidity') +
+               geom_boxplot(),
+             ggplot(data = pf, aes(x = quality, y = volatile.acidity, fill = quality)) +
+               scale_fill_brewer(palette = "Blues")+
+               xlab('Quality') +
+               ylab('Volitile  Acidity') +
+               geom_boxplot(),
+             ggplot(data = pf, aes(x = quality, y = citric.acid, fill = quality)) +
+               scale_fill_brewer(palette = "Blues")+
+               xlab('Quality') +
+               ylab('Citric Acidity') +
+               geom_boxplot(),
+             ggplot(data = pf, aes(x = quality, y = pH, fill = quality)) +
+               scale_fill_brewer(palette = "Blues")+
+               xlab('Quality') +
+               ylab('PH') +
+               geom_boxplot())
+               
+```
+```{r}
+ggplot(data = pf, aes( x = quality, y = alcohol, fill = rating)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Blues")+
+  xlab('Alcohol') +
+  ylab('Volatile Acidity')
+```
 从箱线图中可以看出，fixed acidity, citric acid, sulphates，alcohol 与葡萄酒质量正相关，volatile acidity ， pH 跟质量是负相关的。 从相关性测试中，观察到类似的趋势；
 
 #### 其他情况
@@ -326,10 +356,17 @@ ggplot(aes(x = pH, y = alcohol, color = factor(quality)), data = pf) +
   geom_smooth(method = "lm", se = FALSE,size=1) +
   labs(y = 'alcohol',x = 'pH') +
   ggtitle("Alcohol  VS  PH VS  quality")
+ggplot(data = subset(pf, rating != 'average'),
+       aes(x = alcohol, y = volatile.acidity, color = rating)) +
+  geom_point() +
+  xlab('Alcohol') +
+  ylab('Volatile Acidity')
 ```
 
 ## 多变量分析
+
 多变量图，通过把质量分数分图，通过3个评级类别进行分析，可以看到，较高的alcohol, sulphates, citric acid, fixed acidity，较低的volatile acidity可以产生更高质量的葡萄酒。ph对质量的影响很小，这个很意外；
+最后一图去掉中级后，更能明显看出低挥发性酸度volatile acid和高酒精含量alcohol对质量的影响。
 
 ## 最终成图
 ### 结论一 酸度影响葡萄酒质量
