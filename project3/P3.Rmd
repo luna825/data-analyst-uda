@@ -375,22 +375,26 @@ ggplot(data = subset(pf, rating != 'average'),
 grid.arrange(ggplot(data = pf, aes(x = quality, y = fixed.acidity, fill = quality)) +
                scale_fill_brewer(palette = "Blues")+
                xlab('Quality') +
-               ylab('Fixed Acidity') +
+               ylab('fixed acidity(tartaric acid - g/dm³)') +
+               ggtitle('非挥发性酸与质量关系图')+ 
                geom_boxplot(),
              ggplot(data = pf, aes(x = quality, y = volatile.acidity, fill = quality)) +
                scale_fill_brewer(palette = "Blues")+
                xlab('Quality') +
-               ylab('Volitile  Acidity') +
+               ylab('volatile acidity(acetic acid - g/dm³)') +
+               ggtitle('挥发性酸与质量关系图')+
                geom_boxplot(),
              ggplot(data = pf, aes(x = quality, y = citric.acid, fill = quality)) +
                scale_fill_brewer(palette = "Blues")+
                xlab('Quality') +
-               ylab('Citric Acidity') +
+               ylab('citric acid(g/dm³)') +
+               ggtitle('柠檬酸与质量关系图') +
                geom_boxplot(),
              ggplot(data = pf, aes(x = quality, y = pH, fill = quality)) +
                scale_fill_brewer(palette = "Blues")+
                xlab('Quality') +
                ylab('PH') +
+               ggtitle('PH值与质量关系图')+
                geom_boxplot())
                
 ```
@@ -405,8 +409,9 @@ grid.arrange(ggplot(data = pf, aes(x = quality, y = fixed.acidity, fill = qualit
 ggplot(data = pf, aes( x = quality, y = alcohol, fill = rating)) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Blues")+
-  xlab('Alcohol') +
-  ylab('Volatile Acidity')
+  xlab('quality') +
+  ylab('alcohol (% by volume)')+
+  ggtitle('酒精浓度与质量的线箱关系图')
 ```
 
  - 一般来说，高质量葡萄酒含有较高的酒精含量，但是单独看酒精对质量的影响并不是那么强；
@@ -417,8 +422,9 @@ ggplot(data = pf, aes( x = quality, y = alcohol, fill = rating)) +
 ggplot(data = subset(pf, rating != 'average'),
        aes(x = alcohol, y = volatile.acidity, color = rating)) +
   geom_point() +
-  xlab('Alcohol') +
-  ylab('Volatile Acidity')
+  xlab('alcohol (% by volume)') +
+  ylab('volatile acidity (acetic acid - g / dm³)')+
+  ggtitle('酒精浓度与挥发性酸度分布图')
 ```
 
 图中去掉了中级葡萄酒的影响，也没有采用以上通用的渐变色表达，因为渐变色不明显，看不清楚，现在可以更明显的看到：
